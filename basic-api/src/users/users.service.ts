@@ -36,6 +36,58 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
+  async findAllPaginated(limit = 10, page = 1) {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.user.findMany({
+        skip,
+        take: limit,
+        orderBy: { id: 'asc' },
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+          email: true,
+        },
+      }),
+      this.prisma.user.count(),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async findAllCursor(limit = 10, cursor?: number) {
+    const users = await this.prisma.user.findMany({
+      take: limit,
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        email: true,
+      },
+    });
+
+    const nextCursor = users.length ? users[users.length - 1].id : null;
+
+    return {
+      data: users,
+      meta: {
+        nextCursor,
+      },
+    };
+  }
+
   async findOne(id: number): Promise<CreateUserResponseDto> {
     const user = await this.prisma.user.findUnique({
       where: { id },

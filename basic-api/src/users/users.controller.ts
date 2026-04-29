@@ -6,6 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  DefaultValuePipe,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +26,25 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('paginated')
+  findAllPaginated(
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ) {
+    return this.usersService.findAllPaginated(limit, page);
+  }
+
+  @Get('cursor')
+  findAllCursor(
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('cursor') cursor?: string,
+  ) {
+    return this.usersService.findAllCursor(
+      limit,
+      cursor ? Number(cursor) : undefined,
+    );
   }
 
   @Get(':id')
