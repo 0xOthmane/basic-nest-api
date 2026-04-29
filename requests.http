@@ -3,8 +3,9 @@ POST http://localhost:3000/users HTTP/1.1
 content-type: application/json
 
 {
-    "name": "test",
-    "email": "test@example.com"
+    "firstname": "test",
+    "lastname": "test",
+    "email": "test4@example.com"
 }
 
 ###
@@ -15,4 +16,55 @@ content-type: application/json
 {
     "name": "test invalid email",
     "email": "test22example.com"
+}
+
+###
+
+GET http://localhost:3000/users/12 HTTP/1.1
+content-type: application/json
+###
+
+GET http://localhost:3000/users HTTP/1.1
+content-type: application/json
+###
+POST http://localhost:3000/users HTTP/1.1
+content-type: application/json
+
+{
+    "name": "t",
+    "email": "test22@example.com"
+}
+
+###
+POST http://localhost:3000/users HTTP/1.1
+content-type: application/json
+
+{
+    "name": "testestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestssttestestsst",
+    "email": "test22@example.com"
+}
+
+###
+
+DELETE http://localhost:3000/users/7 HTTP/1.1
+content-type: application/json
+###
+DELETE http://localhost:3000/users/5 HTTP/1.1
+content-type: application/json
+###
+PATCH http://localhost:3000/users/1 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "test3",
+    "email": "test22@example.com"
+}
+###
+PATCH http://localhost:3000/users/3 HTTP/1.1
+content-type: application/json
+
+{
+    "id": 31,
+    "name": "test3",
+    "email": "test22@example.com"
 }

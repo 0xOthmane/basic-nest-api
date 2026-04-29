@@ -15,6 +15,12 @@ datasource db {
 
 model User {
   id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  email String  @unique 
+  firstname  String? @db.VarChar(50)
+  lastname  String? @db.VarChar(50)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("users")
 }
