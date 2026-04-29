@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/marcosgomesneto/bun-devcontainers/tree/main/src/bun-postgresql
+// README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
 {
-	"name": "Bun & PostgreSQL",
+	"name": "Node.js & PostgreSQL",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
@@ -11,10 +11,10 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// This can be used to network with other containers or with the host.
-	// "forwardPorts": [8080, 5432],
+	// "forwardPorts": [3000, 5432],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "bun install",
+	// "postCreateCommand": "yarn install",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
