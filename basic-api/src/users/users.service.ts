@@ -34,8 +34,8 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  async findAll() {
+    return await this.prisma.user.findMany();
   }
 
   async findAllPaginated(params: PaginationQueryParams) {
@@ -105,9 +105,14 @@ export class UsersService {
       excludeExtraneousValues: true,
     });
   }
+  async getUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await this.prisma.user.update({
       where: { id },
       data: { ...updateUserDto },
     });
