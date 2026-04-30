@@ -8,8 +8,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { UserResponseDto } from './dto/delete-user-response.dto';
-import { CreateUserResponseDto } from './dto/create-user-response.dto';
-import { plainToInstance } from 'class-transformer';
 import { CursorQueryParams } from 'src/common/pipes/cursor.pipe';
 import { PaginationQueryParams } from 'src/common/pipes/pagination.pipe';
 
@@ -34,8 +32,8 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  async findAll() {
+    return await this.prisma.user.findMany();
   }
 
   async findAllPaginated(params: PaginationQueryParams) {
@@ -71,8 +69,7 @@ export class UsersService {
     const { cursor, limit } = params;
     const users = await this.prisma.user.findMany({
       take: limit,
-      skip: cursor ? 1 : 0,
-      cursor: cursor ? { id: cursor } : undefined,
+      ...(cursor && { skip: 1, cursor: { id: cursor } }),
       orderBy: { id: 'asc' },
       select: {
         id: true,
@@ -92,25 +89,37 @@ export class UsersService {
     };
   }
 
-  async findOne(id: number): Promise<CreateUserResponseDto> {
+  async findOne(id: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    const dto = plainToInstance(CreateUserResponseDto, user);
-    console.log(dto.fullname);
-    return plainToInstance(CreateUserResponseDto, user, {
-      excludeExtraneousValues: true,
+    return user;
+  }
+  async getUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({
-      where: { id },
-      data: { ...updateUserDto },
-    });
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      return await this.prisma.user.update({
+        where: { id },
+        data: { ...updateUserDto },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException(
+            `User with email ${updateUserDto.email} already exists`,
+          );
+        }
+      }
+      throw error;
+    }
   }
 
   async remove(id: number): Promise<UserResponseDto> {

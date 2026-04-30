@@ -6,14 +6,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class CommentsService {
   constructor(private prisma: PrismaService) {}
-  create(createCommentDto: CreateCommentDto) {
+  create(createCommentDto: CreateCommentDto, postId: string, authorId: number) {
     try {
-      const userId = 1; // Replace with actual user ID from authentication context
-      const postId = '1';
       return this.prisma.comment.create({
         data: {
           ...createCommentDto,
-          authorId: userId,
+          authorId,
           postId,
         },
       });
