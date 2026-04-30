@@ -10,7 +10,7 @@ import { UsersModule } from '../../users/users.module';
 import { PostsModule } from '../../posts/posts.module';
 import { CommentsModule } from '../../comments/comments.module';
 
-// jest.setTimeout(60000);
+jest.setTimeout(60000);
 
 /**
  * Starts a real PostgreSQL container via Testcontainers, runs all migrations,
@@ -59,6 +59,9 @@ export async function setupTestDb(): Promise<TestContext> {
 }
 
 export async function teardownTestDb(ctx: TestContext): Promise<void> {
+  if (!ctx) {
+    return;
+  }
   await ctx.module.close();
   await ctx.container.stop();
 }

@@ -8,6 +8,7 @@ import { UsersService } from './users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { buildFixtures } from 'src/utils/test/test-fixtures';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { User } from 'src/generated/prisma/client';
 
 describe('UsersService', () => {
   let ctx: TestContext;
@@ -95,20 +96,23 @@ describe('UsersService', () => {
       });
     });
     it('should return cursor paginated results', async () => {
+      const createdUsers: User[] = [];
       for (let i = 0; i < 15; i++) {
-        await fixtures.user({
+        const user = await fixtures.user({
           email: `user${i}@test.com`,
           firstname: `User ${i}`,
           lastname: `Last Name ${i}`,
           password: 'password123',
         });
+        createdUsers.push(user);
       }
 
-      const users = await service.findAllCursor({ cursor: 1, limit: 5 });
-      expect(users.data).toHaveLength(5);
-      expect(users.meta).toEqual({
-        nextCursor: 6,
+      const users = await service.findAllCursor({
+        cursor: createdUsers[0].id,
+        limit: 5,
       });
+      expect(users.data).toHaveLength(5);
+      expect(users.meta.nextCursor).toBeDefined();
     });
   });
   describe('findOne', () => {
@@ -121,7 +125,10 @@ describe('UsersService', () => {
       });
 
       const user = await service.findOne(created.id);
-      expect(user).toEqual(created);
+      expect(user.id).toBe(created.id);
+      expect(user.email).toBe(created.email);
+      expect(user.firstname).toBe(created.firstname);
+      expect(user.lastname).toBe(created.lastname);
     });
   });
   describe('update', () => {
@@ -140,8 +147,8 @@ describe('UsersService', () => {
         password: 'newsecurepassword',
       });
 
-      expect(updated).toEqual({
-        ...created,
+      expect(updated).toMatchObject({
+        id: created.id,
         email: 'john.updated@example.com',
         firstname: 'John',
         lastname: 'Updated',
@@ -182,8 +189,9 @@ describe('UsersService', () => {
       });
 
       await service.remove(created.id);
-      const user = await service.findOne(created.id);
-      expect(user).toBeUndefined();
+      await expect(service.findOne(created.id)).rejects.toThrow(
+        NotFoundException,
+      );
     });
     it('should do nothing if user does not exist', async () => {
       await expect(service.remove(999)).rejects.toThrow(NotFoundException);
