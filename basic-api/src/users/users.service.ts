@@ -10,6 +10,8 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { UserResponseDto } from './dto/delete-user-response.dto';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import { plainToInstance } from 'class-transformer';
+import { CursorQueryParams } from 'src/common/pipes/cursor.pipe';
+import { PaginationQueryParams } from 'src/common/pipes/pagination.pipe';
 
 @Injectable()
 export class UsersService {
@@ -36,7 +38,8 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  async findAllPaginated(limit = 10, page = 1) {
+  async findAllPaginated(params: PaginationQueryParams) {
+    const { page, limit } = params;
     const skip = (page - 1) * limit;
 
     const [data, total] = await Promise.all([
@@ -64,7 +67,8 @@ export class UsersService {
     };
   }
 
-  async findAllCursor(limit = 10, cursor?: number) {
+  async findAllCursor(params: CursorQueryParams) {
+    const { cursor, limit } = params;
     const users = await this.prisma.user.findMany({
       take: limit,
       skip: cursor ? 1 : 0,
