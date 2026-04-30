@@ -27,6 +27,8 @@
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@thallesp/nestjs-better-auth": "^2.6.0",
+    "better-auth": "^1.6.9",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "dotenv": "^17.4.2",
@@ -65,16 +67,22 @@
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
-    "jest": { 
-    "moduleFileExtensions": [ "js", "json", "ts" ], 
-    "rootDir": "src", 
-    "testRegex": ".*\\.spec\\.ts$", 
-    "transform": { "^.+\\.(t|j)s$": "ts-jest" }, 
-    "moduleNameMapper": { 
-      "^src/(.*)$": "<rootDir>/$1", 
-      "^(\\.{1,2}/.*)\\.js$": "$1" 
-    }, 
-      "testEnvironment": "node", 
-      "transformIgnorePatterns": [] 
-    }
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1",
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "testEnvironment": "node",
+    "transformIgnorePatterns": []
+  }
 }
