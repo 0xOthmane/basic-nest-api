@@ -47,8 +47,7 @@ export class UsersService {
         orderBy: { id: 'asc' },
         select: {
           id: true,
-          firstname: true,
-          lastname: true,
+          name: true,
           email: true,
         },
       }),
@@ -73,8 +72,7 @@ export class UsersService {
       orderBy: { id: 'asc' },
       select: {
         id: true,
-        firstname: true,
-        lastname: true,
+        name: true,
         email: true,
       },
     });
@@ -89,7 +87,7 @@ export class UsersService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -104,7 +102,7 @@ export class UsersService {
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     try {
       return await this.prisma.user.update({
         where: { id },
@@ -122,7 +120,7 @@ export class UsersService {
     }
   }
 
-  async remove(id: number): Promise<UserResponseDto> {
+  async remove(id: string): Promise<UserResponseDto> {
     const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -131,8 +129,7 @@ export class UsersService {
       where: { id },
       select: {
         id: true,
-        firstname: true,
-        lastname: true,
+        name: true,
         email: true,
       },
     })) as UserResponseDto;

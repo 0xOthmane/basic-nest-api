@@ -11,23 +11,17 @@ export class CreateUserDto {
   @Transform(({ value }: { value: string }) => value.trim().toLowerCase())
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50, { message: 'Firstname must be at most 50 characters' })
-  @MinLength(2, { message: 'Firstname must be at least 2 characters' })
-  readonly firstname: string;
+  @MaxLength(50, { message: 'Name must be at most 50 characters' })
+  @MinLength(2, { message: 'Name must be at least 2 characters' })
+  readonly name: string;
 
-  @Transform(({ value }: { value: string }) => value.trim().toLowerCase())
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(50, { message: 'Firstname must be at most 50 characters' })
-  @MinLength(2, { message: 'Firstname must be at least 2 characters' })
-  readonly lastname: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255, { message: 'Password must be at most 255 characters' })
-  @MinLength(12, { message: 'Password must be at least 12 characters' })
-  @Exclude()
-  readonly password: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // @MaxLength(255, { message: 'Password must be at most 255 characters' })
+  // @MinLength(12, { message: 'Password must be at least 12 characters' })
+  // @Exclude()
+  // readonly password: string;
 
   @Transform(({ value }: { value: string }) => value.trim().toLowerCase())
   @IsEmail({}, { message: 'Invalid email address' })

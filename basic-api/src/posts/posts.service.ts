@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
-  async create(createPostDto: CreatePostDto, authorId: number) {
+  async create(createPostDto: CreatePostDto, authorId: string) {
     const post = await this.prisma.post.create({
       data: { ...createPostDto, authorId },
     });
@@ -20,10 +20,13 @@ export class PostsService {
         title: true,
         content: true,
         author: {
-          select: {
-            id: true,
-            firstname: true,
-            lastname: true,
+          include: {
+            profile: {
+              select: {
+                firstname: true,
+                lastname: true,
+              },
+            },
           },
         },
         published: true,
