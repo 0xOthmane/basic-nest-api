@@ -8,6 +8,7 @@ import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { buildFixtures } from 'src/utils/test/test-fixtures';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { type UserSession } from '@thallesp/nestjs-better-auth';
 
 describe('PostsController', () => {
   let ctx: TestContext;
@@ -30,12 +31,16 @@ describe('PostsController', () => {
 
   describe('create', () => {
     it('should create a post', async () => {
-      await fixtures.user();
+      const user = await fixtures.user();
+      const session: UserSession = fixtures.session(user);
 
-      const post = await controller.create({
-        title: 'Test Post',
-        content: 'This is a test post',
-      });
+      const post = await controller.create(
+        {
+          title: 'Test Post',
+          content: 'This is a test post',
+        },
+        session,
+      );
 
       expect(post).toHaveProperty('id');
       expect(post.title).toBe('Test Post');
