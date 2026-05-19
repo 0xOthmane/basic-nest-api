@@ -15,35 +15,39 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
+  id            String       @id @default(uuid())
+  email         String       @unique
   name          String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean      @default(false)
   image         String?
   sessions      Session[]
   accounts      Account[]
   profile       UserProfile?
+  role          Enum         @default(USER)
 
-  posts     Post[]
-  comments  Comment[]
+  posts    Post[]
+  comments Comment[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  
   @@map("users")
 }
 
-model UserProfile {
-  id        String    @id @default(uuid())
-  userId    String    @unique
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firstname String?   @db.VarChar(50)
-  lastname  String?   @db.VarChar(50)
-  bio       String?   @db.Text
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+enum Enum {
+  USER
+  ADMIN
+}
 
+model UserProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstname String?  @db.VarChar(50)
+  lastname  String?  @db.VarChar(50)
+  bio       String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("user_profiles")
 }

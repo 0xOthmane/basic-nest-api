@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,17 +20,23 @@ import {
   type PaginationQueryParams,
 } from 'src/common/pipes/pagination.pipe';
 import { DeleteRoute } from 'src/common/decorators/delete-route.decorator';
+import { RoleGuard } from 'src/role/role.guard';
+import { Role } from 'src/role/role.decorator';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @Controller('users')
+@UseGuards(RoleGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  // @AllowAnonymous()
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }
 
   @Get()
+  @Role('ADMIN')
   async findAll() {
     return await this.usersService.findAll();
   }
