@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core/services/reflector.service';
 import { auth } from 'src/lib/auth';
@@ -25,7 +26,7 @@ export class OwnerGuard implements CanActivate {
     const user = session?.user;
 
     if (!user) {
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         'You must be logged in to access this resource',
       );
     }

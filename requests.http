@@ -109,13 +109,13 @@ Origin: http://localhost:3000
 }
 ### 
 GET http://localhost:3000/users HTTP/1.1
-Cookie: better-auth.session_token=FPpam8JBxGsT0SzvGi4FI313WdoeIEOw.Vlq1jqwNfoZ7jGkI3BhBny4mK%2F%2Fb8JQUgzL9Ys4X1xE%3D; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
+Cookie: better-auth.session_token=****; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
 
 
 ### 
 POST http://localhost:3000/posts HTTP/1.1
 content-type: application/json
-Cookie: better-auth.session_token=FPpam8JBxGsT0SzvGi4FI313WdoeIEOw.Vlq1jqwNfoZ7jGkI3BhBny4mK%2F%2Fb8JQUgzL9Ys4X1xE%3D; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
+Cookie: better-auth.session_token=****; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
 
 {
     "title": "test post",
@@ -125,7 +125,7 @@ Cookie: better-auth.session_token=FPpam8JBxGsT0SzvGi4FI313WdoeIEOw.Vlq1jqwNfoZ7j
 ### 
 PATCH  http://localhost:3000/posts/a05b470a-a87b-4ca5-9e6e-0755d271de03 HTTP/1.1
 content-type: application/json
-Cookie: better-auth.session_token=LfRGYBRwpuWeMacm3d7nccZKjmBdySvR.yMTmYsD3Q8Ds8IBu39CO6gIn5VZfVw8aNO8Zd4F%2Fa%2FU%3D; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
+Cookie: better-auth.session_token=****; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
 
 {
     "title": "test post",
