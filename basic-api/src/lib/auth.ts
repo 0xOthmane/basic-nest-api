@@ -2,6 +2,8 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { PrismaClient } from 'src/generated/prisma/client';
+import { openAPI } from 'better-auth/plugins';
+import 'dotenv/config';
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
@@ -13,4 +15,15 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        enumValues: ['USER', 'ADMIN'],
+        default: 'USER',
+        input: false
+      },
+    },
+  },
+  plugins: [openAPI()],
 });
