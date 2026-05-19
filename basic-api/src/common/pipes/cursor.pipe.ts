@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { isInt } from 'class-validator';
+import { isInt, isString } from 'class-validator';
 
 export interface CursorQueryParams {
-  cursor?: number;
+  cursor?: string;
   limit: number;
 }
 
@@ -16,10 +16,7 @@ export class CursorPipe implements PipeTransform {
       throw new BadRequestException('Limit must be a positive integer');
     }
 
-    if (
-      cursor !== undefined &&
-      (isNaN(cursor) || cursor < 0 || !isInt(cursor))
-    ) {
+    if (cursor !== undefined && !isString(cursor)) {
       throw new BadRequestException('Cursor must be a non-negative integer');
     }
 

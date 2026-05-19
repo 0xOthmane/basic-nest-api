@@ -31,15 +31,12 @@ describe('UsersService', () => {
     it('should create a user', async () => {
       const user = await service.create({
         email: 'john.doe@example.com',
-        firstname: 'John',
-        lastname: 'Doe',
-        password: 'securepassword',
+        name: 'John Doe',
       });
 
       expect(user).toHaveProperty('id');
       expect(user.email).toBe('john.doe@example.com');
-      expect(user.firstname).toBe('John');
-      expect(user.lastname).toBe('Doe');
+      expect(user.name).toBe('John Doe');
     });
 
     it('should not allow duplicate emails', async () => {
@@ -47,9 +44,7 @@ describe('UsersService', () => {
       await expect(
         service.create({
           email: 'alice@test.com',
-          firstname: 'Alice',
-          lastname: 'Smith',
-          password: 'password123',
+          name: 'Alice Smith',
         }),
       ).rejects.toThrow(ConflictException);
     });
@@ -57,18 +52,8 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return all users', async () => {
-      await fixtures.user({
-        email: 'alice2@test.com',
-        firstname: 'Alice',
-        lastname: 'Smith',
-        password: 'password123',
-      });
-      await fixtures.user({
-        email: 'bob@test.com',
-        firstname: 'Bob',
-        lastname: 'Johnson',
-        password: 'password456',
-      });
+      await fixtures.user({ email: 'alice2@test.com', name: 'Alice Smith' });
+      await fixtures.user({ email: 'bob@test.com', name: 'Bob Johnson' });
 
       const users = await service.findAll();
       expect(users).toHaveLength(2);
@@ -81,9 +66,7 @@ describe('UsersService', () => {
       for (let i = 0; i < 15; i++) {
         await fixtures.user({
           email: `user${i}@test.com`,
-          firstname: `User ${i}`,
-          lastname: `Last Name ${i}`,
-          password: 'password123',
+          name: `User ${i} Last Name ${i}`,
         });
       }
 
@@ -100,9 +83,7 @@ describe('UsersService', () => {
       for (let i = 0; i < 15; i++) {
         const user = await fixtures.user({
           email: `user${i}@test.com`,
-          firstname: `User ${i}`,
-          lastname: `Last Name ${i}`,
-          password: 'password123',
+          name: `User ${i} Last Name ${i}`,
         });
         createdUsers.push(user);
       }
@@ -119,74 +100,45 @@ describe('UsersService', () => {
     it('should return a user by ID', async () => {
       const created = await fixtures.user({
         email: 'john.doe@example.com',
-        firstname: 'John',
-        lastname: 'Doe',
-        password: 'securepassword',
+        name: 'John Doe',
       });
 
       const user = await service.findOne(created.id);
       expect(user.id).toBe(created.id);
       expect(user.email).toBe(created.email);
-      expect(user.firstname).toBe(created.firstname);
-      expect(user.lastname).toBe(created.lastname);
+      expect(user.name).toBe(created.name);
     });
   });
   describe('update', () => {
     it('should update a user', async () => {
-      const created = await fixtures.user({
-        email: 'john.doe@example.com',
-        firstname: 'John',
-        lastname: 'Doe',
-        password: 'securepassword',
-      });
+      const created = await fixtures.user({ email: 'john.doe@example.com', name: 'John Doe' });
 
       const updated = await service.update(created.id, {
         email: 'john.updated@example.com',
-        firstname: 'John',
-        lastname: 'Updated',
-        password: 'newsecurepassword',
+        name: 'John Updated',
       });
 
       expect(updated).toMatchObject({
         id: created.id,
         email: 'john.updated@example.com',
-        firstname: 'John',
-        lastname: 'Updated',
-        password: 'newsecurepassword',
+        name: 'John Updated',
       });
     });
     it('should not allow updating to an existing email', async () => {
-      const user1 = await fixtures.user({
-        email: 'alice@test.com',
-        firstname: 'Alice',
-        lastname: 'Smith',
-        password: 'password123',
-      });
-      const user2 = await fixtures.user({
-        email: 'bob@test.com',
-        firstname: 'Bob',
-        lastname: 'Johnson',
-        password: 'password456',
-      });
+      const user1 = await fixtures.user({ email: 'alice@test.com', name: 'Alice Smith' });
+      const user2 = await fixtures.user({ email: 'bob@test.com', name: 'Bob Johnson' });
 
       await expect(
         service.update(user2.id, {
           email: 'alice@test.com',
-          firstname: 'Bob',
-          lastname: 'Updated',
-          password: 'newpassword',
+          name: 'Bob Updated',
         }),
       ).rejects.toThrow(ConflictException);
     });
   });
   describe('remove', () => {
     it('should remove a user', async () => {
-      const created = await fixtures.user({
-        email: 'john.doe@example.com',
-        firstname: 'John',
-        lastname: 'Doe',
-        password: 'securepassword',
-      });
+      const created = await fixtures.user({ email: 'john.doe@example.com', name: 'John Doe' });
 
       await service.remove(created.id);
       await expect(service.findOne(created.id)).rejects.toThrow(
@@ -194,7 +146,7 @@ describe('UsersService', () => {
       );
     });
     it('should do nothing if user does not exist', async () => {
-      await expect(service.remove(999)).rejects.toThrow(NotFoundException);
+      await expect(service.remove("999")).rejects.toThrow(NotFoundException);
     });
   });
 });

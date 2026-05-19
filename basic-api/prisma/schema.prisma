@@ -17,22 +17,35 @@ datasource db {
 model User {
   id        String    @id @default(uuid())
   email     String    @unique
-  firstname String?   @db.VarChar(50)
-  lastname  String?   @db.VarChar(50)
-  password  String    @db.VarChar(255)
+  name          String
+  emailVerified Boolean   @default(false)
+  image         String?
+  sessions      Session[]
+  accounts      Account[]
+  profile       UserProfile?
+
   posts     Post[]
   comments  Comment[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  name          String
-  emailVerified Boolean   @default(false)
-  image         String?
-  sessions      Session[]
-  accounts      Account[]
-
+  
   @@map("users")
+}
+
+model UserProfile {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstname String?   @db.VarChar(50)
+  lastname  String?   @db.VarChar(50)
+  bio       String?   @db.Text
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+
+
+  @@map("user_profiles")
 }
 
 model Post {

@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('CommentsService');
 
 @Injectable()
 export class CommentsService {
   constructor(private prisma: PrismaService) {}
-  create(createCommentDto: CreateCommentDto, postId: string, authorId: number) {
+  create(createCommentDto: CreateCommentDto, postId: string, authorId: string) {
     try {
       return this.prisma.comment.create({
         data: {
@@ -16,6 +19,7 @@ export class CommentsService {
         },
       });
     } catch (error) {
+      logger.error('Failed to create comment', error);
       throw new Error('Failed to create comment');
     }
   }
@@ -26,10 +30,13 @@ export class CommentsService {
         id: true,
         content: true,
         author: {
-          select: {
-            id: true,
-            firstname: true,
-            lastname: true,
+          include: {
+            profile: {
+              select: {
+                firstname: true,
+                lastname: true,
+              },
+            },
           },
         },
       },
@@ -44,10 +51,13 @@ export class CommentsService {
         id: true,
         content: true,
         author: {
-          select: {
-            id: true,
-            firstname: true,
-            lastname: true,
+          include: {
+            profile: {
+              select: {
+                firstname: true,
+                lastname: true,
+              },
+            },
           },
         },
       },

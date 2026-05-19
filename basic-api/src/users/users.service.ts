@@ -16,8 +16,9 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
   async create(createUserDto: CreateUserDto) {
     try {
+      const { name, email } = createUserDto;
       const user = await this.prisma.user.create({
-        data: { ...createUserDto },
+        data: { name, email },
       });
       return user;
     } catch (error) {
@@ -47,8 +48,7 @@ export class UsersService {
         orderBy: { id: 'asc' },
         select: {
           id: true,
-          firstname: true,
-          lastname: true,
+          name: true,
           email: true,
         },
       }),
@@ -73,8 +73,7 @@ export class UsersService {
       orderBy: { id: 'asc' },
       select: {
         id: true,
-        firstname: true,
-        lastname: true,
+        name: true,
         email: true,
       },
     });
@@ -89,9 +88,10 @@ export class UsersService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
+    const idStr = String(id);
     const user = await this.prisma.user.findUnique({
-      where: { id },
+      where: { id: idStr },
     });
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -104,10 +104,11 @@ export class UsersService {
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     try {
+      const idStr = String(id);
       return await this.prisma.user.update({
-        where: { id },
+        where: { id: idStr },
         data: { ...updateUserDto },
       });
     } catch (error) {
@@ -122,17 +123,17 @@ export class UsersService {
     }
   }
 
-  async remove(id: number): Promise<UserResponseDto> {
-    const user = await this.findOne(id);
+  async remove(id: string): Promise<UserResponseDto> {
+    const idStr = String(id);
+    const user = await this.findOne(idStr);
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
     const deletedUser = (await this.prisma.user.delete({
-      where: { id },
+      where: { id: idStr },
       select: {
         id: true,
-        firstname: true,
-        lastname: true,
+        name: true,
         email: true,
       },
     })) as UserResponseDto;
