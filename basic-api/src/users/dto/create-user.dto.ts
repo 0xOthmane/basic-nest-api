@@ -15,7 +15,6 @@ export class CreateUserDto {
   @MinLength(2, { message: 'Name must be at least 2 characters' })
   readonly name: string;
 
-
   // @IsString()
   // @IsNotEmpty()
   // @MaxLength(255, { message: 'Password must be at most 255 characters' })

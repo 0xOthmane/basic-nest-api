@@ -7,6 +7,7 @@ import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { auth } from './lib/auth';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -26,6 +27,27 @@ import { auth } from './lib/auth';
           limit: '2mb',
         },
         rawBody: true,
+      },
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? {
+                target: 'pino-pretty',
+                options: {
+                  singleLine: true,
+                  colorize: true,
+                },
+              }
+            : undefined,
+
+        level: process.env.LOG_LEVEL || 'info',
+
+        redact: {
+          paths: ['req.headers.authorization'],
+          censor: '[REDACTED]',
+        },
       },
     }),
   ],

@@ -10,6 +10,8 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { UserResponseDto } from './dto/delete-user-response.dto';
 import { CursorQueryParams } from 'src/common/pipes/cursor.pipe';
 import { PaginationQueryParams } from 'src/common/pipes/pagination.pipe';
+import { plainToInstance } from 'class-transformer';
+import { CreateUserResponseDto } from './dto/create-user-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -45,7 +47,7 @@ export class UsersService {
       this.prisma.user.findMany({
         skip,
         take: limit,
-        orderBy: { id: 'asc' },
+        orderBy: { createdAt: 'asc' },
         select: {
           id: true,
           name: true,
@@ -69,8 +71,9 @@ export class UsersService {
     const { cursor, limit } = params;
     const users = await this.prisma.user.findMany({
       take: limit,
-      ...(cursor && { skip: 1, cursor: { id: cursor } }),
-      orderBy: { id: 'asc' },
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: { createdAt: 'asc' },
       select: {
         id: true,
         name: true,
@@ -96,11 +99,9 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    return user;
-  }
-  async getUserByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: { email },
+    // const dto = plainToInstance(CreateUserResponseDto, user);
+    return plainToInstance(CreateUserResponseDto, user, {
+      excludeExtraneousValues: true,
     });
   }
 
