@@ -23,7 +23,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   profile       UserProfile?
-  role          Enum         @default(USER)
+  role          UserRole         @default(USER)
 
   posts    Post[]
   comments Comment[]
@@ -34,7 +34,7 @@ model User {
   @@map("users")
 }
 
-enum Enum {
+enum UserRole {
   USER
   ADMIN
 }

@@ -23,7 +23,6 @@ export class RoleGuard implements CanActivate {
     if (!session) {
       throw new UnauthorizedException('Not authenticated');
     }
-    console.log(session);
     request.user = session.user;
     request.session = session.session;
 
@@ -31,13 +30,12 @@ export class RoleGuard implements CanActivate {
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
-    console.log(requiredRoles);
 
     if (!requiredRoles?.length) {
       return true;
     }
 
-    const userRole = session.user.role ?? "";
+    const userRole = session.user.role ?? "USER";
 
     const hasRole = requiredRoles.includes(userRole);
 
